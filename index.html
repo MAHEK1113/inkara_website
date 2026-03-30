@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inkara</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --parchment: #f5ead7;
+  --aged: #e8d5b5;
+  --leather: #2c1a0e;
+  --mahogany: #5c2e0a;
+  --burgundy: #7a1f2e;
+  --gold: #c9922a;
+  --gold-l: #e8b84b;
+  --ink: #1a0f05;
+  --sepia: #6b4c2a;
+  --cream: #faf3e0;
+  --shadow: rgba(44,26,14,0.35);
+}
+
+body {
+  background: var(--parchment);
+  color: var(--ink);
+  font-family: 'EB Garamond', Georgia, serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 10px;
+  border: 2px solid var(--gold);
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: inset 0 0 0 1px rgba(201,146,42,0.25);
+}
+
+.content-box {
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 25px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+/* HEADER */
+header {
+  background: linear-gradient(160deg, var(--leather) 0%, #1a0a04 60%, var(--mahogany) 100%);
+  padding: 52px 30px 44px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(201,146,42,0.03) 3px, rgba(201,146,42,0.03) 6px);
+}
+.h-ornament { font-family:'Cinzel',serif; font-size:0.75rem; letter-spacing:0.45em; color:rgba(232,184,75,0.6); text-transform:uppercase; margin-bottom:10px; }
+h1.site-title { font-family:'Cinzel',serif; font-size:clamp(2.2rem,5.5vw,4.2rem); color:var(--gold-l); letter-spacing:0.06em; text-shadow:0 2px 24px rgba(201,146,42,0.4); line-height:1.1; }
+.tagline { font-family:'Cormorant Garamond',serif; font-style:italic; color:rgba(232,184,75,0.7); font-size:1.2rem; margin-top:10px; }
+.h-after { color:var(--gold); font-size:1rem; letter-spacing:1.3rem; opacity:0.6; margin-top:14px; }
+
+/* NAV */
+nav {
+  background: var(--mahogany);
+  border-top: 2px solid var(--gold);
+  border-bottom: 2px solid var(--gold);
+  display: flex; justify-content: center;
+  position: sticky; top: 0; z-index: 100;
+}
+nav button {
+  color: var(--aged);
+  background: none; border: none;
+  font-family: 'Cinzel', serif;
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 13px 24px;
+  cursor: pointer;
+  border-right: 1px solid rgba(201,146,42,0.28);
+  transition: all .22s;
+}
+nav button:first-child { border-left: 1px solid rgba(201,146,42,0.28); }
+nav button:hover, nav button.active { background: rgba(201,146,42,0.15); color: var(--gold-l); }
+nav button.active { border-bottom: 2px solid var(--gold); }
+
+/* SECTION */
+.section { max-width: 1160px; margin: 0 auto; padding: 54px 36px; }
+
+.sec-title { font-family:'Playfair Display',serif; font-size:2.2rem; color:var(--mahogany); text-align:center; }
+.sec-title::after { content:''; display:block; width:70px; height:2px; background:linear-gradient(to right,transparent,var(--gold),transparent); margin:12px auto 0; }
+.sec-sub { text-align:center; font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--sepia); font-size:1.05rem; margin-bottom:44px; margin-top:6px; }
+
+/* SEARCH ROW */
+.search-row { display:flex; gap:10px; justify-content:center; margin-bottom:40px; flex-wrap:wrap; }
+.search-row input {
+  flex:1; max-width:460px;
+  background:var(--cream); border:1px solid var(--gold); border-bottom:2px solid var(--mahogany);
+  padding:12px 18px;
+  font-family:'EB Garamond',serif; font-size:1.05rem; color:var(--ink);
+  outline:none;
+}
+.search-row input:focus { box-shadow:0 4px 18px rgba(201,146,42,0.18); }
+
+/* BUTTONS */
+.btn {
+  background:var(--mahogany); color:var(--gold-l);
+  border:1px solid var(--gold);
+  padding:12px 26px;
+  font-family:'Cinzel',serif; font-size:0.74rem;
+  letter-spacing:0.1em; text-transform:uppercase;
+  cursor:pointer; transition:all .2s;
+}
+.btn:hover { background:var(--gold); color:var(--leather); }
+.btn:disabled { opacity:0.5; cursor:not-allowed; }
+.btn-sm { padding:7px 14px; font-size:0.66rem; }
+.btn-ghost { background:transparent; color:var(--mahogany); border:1px solid var(--mahogany); }
+.btn-ghost:hover { background:var(--mahogany); color:var(--gold-l); }
+
+/* BOOKS GRID */
+.books-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:28px; }
+.book-card {
+  background:var(--cream); border:1px solid rgba(201,146,42,0.45);
+  box-shadow:4px 4px 0 rgba(92,46,10,0.28);
+  transition:transform .24s, box-shadow .24s;
+  cursor:pointer;
+}
+.book-card:hover { transform:translateY(-6px) rotate(-0.4deg); box-shadow:8px 10px 0 rgba(92,46,10,0.32), 0 20px 40px var(--shadow); }
+.book-cover { width:100%; aspect-ratio:2/3; object-fit:cover; display:block; filter:sepia(18%); }
+.book-cover-ph { width:100%; aspect-ratio:2/3; background:linear-gradient(160deg,var(--mahogany),var(--leather)); display:flex; align-items:center; justify-content:center; font-size:3rem; color:rgba(201,146,42,0.45); }
+.book-info { padding:14px 13px 12px; }
+.book-genre-badge { font-family:'Cinzel',serif; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--mahogany); background:var(--aged); border:1px solid rgba(201,146,42,0.38); display:inline-block; padding:3px 8px; margin-bottom:7px; }
+.book-title { font-family:'Playfair Display',serif; font-size:0.97rem; color:var(--leather); line-height:1.3; margin-bottom:4px; }
+.book-author { font-size:0.8rem; color:var(--sepia); font-style:italic; margin-bottom:6px; }
+.book-year { font-size:0.74rem; color:var(--sepia); opacity:0.7; margin-bottom:8px; }
+.book-actions { display:flex; gap:8px; align-items:center; }
+.wish-btn { background:none; border:none; font-size:1.15rem; cursor:pointer; transition:transform .18s; line-height:1; }
+.wish-btn:hover { transform:scale(1.3); }
+
+/* MOOD GRID */
+.mood-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:16px; margin-bottom:46px; }
+.mood-card {
+  background:var(--cream); border:1px solid rgba(201,146,42,0.45);
+  padding:24px 14px; text-align:center; cursor:pointer;
+  transition:all .22s; box-shadow:3px 3px 0 rgba(92,46,10,0.22);
+}
+.mood-card:hover, .mood-card.sel { background:var(--mahogany); color:var(--aged); box-shadow:6px 6px 0 rgba(92,46,10,0.35); transform:translateY(-3px); }
+.mood-card.sel { background:var(--leather); }
+.mood-emoji { font-size:2.2rem; display:block; margin-bottom:8px; }
+.mood-label { font-family:'Playfair Display',serif; font-size:0.97rem; }
+.mood-desc { font-size:0.76rem; font-style:italic; margin-top:3px; opacity:0.7; }
+
+/* AUTHOR LAYOUT */
+.author-hero { display:grid; grid-template-columns:260px 1fr; gap:46px; align-items:start; margin-bottom:50px; }
+.portrait-col { position: relative; }
+.author-portrait-img {
+  width: 100%; aspect-ratio: 3/4;
+  object-fit: cover; object-position: top center;
+  border: 4px solid var(--gold);
+  box-shadow: 8px 8px 0 var(--mahogany), 14px 14px 36px var(--shadow);
+  filter: sepia(18%) contrast(1.04);
+  display: block;
+}
+.author-portrait-ph { width:100%; aspect-ratio:3/4; background:linear-gradient(135deg,var(--mahogany),var(--leather)); border:4px solid var(--gold); box-shadow:8px 8px 0 var(--mahogany),14px 14px 36px var(--shadow); display:flex; align-items:center; justify-content:center; font-size:4.5rem; color:rgba(201,146,42,0.5); }
+.photo-credit { text-align:center; margin-top:8px; font-size:0.7rem; font-style:italic; color:var(--sepia); opacity:0.7; font-family:'Cormorant Garamond',serif; }
+.wiki-link { display:inline-block; margin-top:14px; color:var(--mahogany); font-family:'Cinzel',serif; font-size:0.72rem; letter-spacing:0.06em; text-decoration:none; border-bottom:1px solid var(--gold); transition:color .2s; }
+.wiki-link:hover { color:var(--gold); }
+.author-name { font-family:'Playfair Display',serif; font-size:2.4rem; color:var(--leather); line-height:1.1; margin-bottom:5px; }
+.author-sub { font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--mahogany); font-size:1.3rem; margin-bottom:14px; }
+.author-meta-pills { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:20px; }
+.meta-pill { background:var(--aged); border:1px solid var(--gold); padding:5px 13px; font-size:0.78rem; font-family:'Cinzel',serif; color:var(--sepia); letter-spacing:0.04em; }
+.author-bio { font-size:1.06rem; line-height:1.85; color:var(--ink); text-align:justify; }
+.genre-tags { display:flex; flex-wrap:wrap; gap:9px; margin-top:20px; }
+.genre-tag { background:var(--mahogany); color:var(--aged); padding:5px 14px; font-family:'Cinzel',serif; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--gold); }
+
+/* SPINNER */
+.spinner-wrap { text-align:center; padding:60px 0; }
+.spinner { display:inline-block; width:36px; height:36px; border:3px solid var(--aged); border-top-color:var(--gold); border-radius:50%; animation:spin .8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.spinner-wrap p { margin-top:14px; font-style:italic; color:var(--sepia); }
+
+/* EMPTY */
+.empty-state { text-align:center; padding:70px 30px; color:var(--sepia); }
+.empty-icon { font-size:3.5rem; opacity:0.4; margin-bottom:14px; }
+.empty-state p { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.25rem; }
+
+/* DIVIDER */
+.divider { text-align:center; margin:36px 0; color:var(--gold); font-size:1rem; letter-spacing:1rem; opacity:0.55; }
+
+/* GENRE FILTER BAR */
+.genre-bar { display:flex; flex-wrap:wrap; gap:9px; justify-content:center; margin-bottom:28px; }
+.gf-btn { background:transparent; border:1px solid var(--gold); color:var(--mahogany); padding:6px 16px; font-family:'Cinzel',serif; font-size:0.64rem; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:all .18s; }
+.gf-btn:hover, .gf-btn.active { background:var(--mahogany); color:var(--gold-l); }
+
+/* MODAL */
+.modal-bg { position:fixed; inset:0; background:rgba(26,15,5,0.72); z-index:500; display:flex; align-items:center; justify-content:center; padding:20px; }
+.modal { background:var(--cream); border:2px solid var(--gold); max-width:540px; width:100%; padding:34px; box-shadow:10px 10px 0 var(--mahogany); max-height:80vh; overflow-y:auto; }
+.modal h3 { font-family:'Playfair Display',serif; font-size:1.55rem; color:var(--leather); margin-bottom:7px; }
+.modal-meta { color:var(--sepia); font-style:italic; font-size:0.9rem; margin-bottom:14px; }
+.modal p { line-height:1.82; color:var(--ink); font-size:0.98rem; }
+.modal-close { float:right; background:none; border:none; font-size:1.35rem; cursor:pointer; color:var(--mahogany); }
+
+/* TOAST */
+#toast { position:fixed; bottom:28px; right:28px; background:var(--leather); color:var(--gold-l); border:1px solid var(--gold); padding:11px 22px; font-family:'Cinzel',serif; font-size:0.74rem; letter-spacing:0.07em; opacity:0; transform:translateY(16px); transition:all .32s; z-index:1000; pointer-events:none; }
+#toast.show { opacity:1; transform:none; }
+
+/* WISHLIST EMPTY */
+.wl-empty { text-align:center; padding:80px 30px; }
+.wl-empty .icon { font-size:3.8rem; opacity:0.35; margin-bottom:16px; }
+.wl-empty p { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.25rem; color:var(--sepia); }
+
+/* results info */
+.results-info { text-align:center; font-style:italic; color:var(--sepia); margin-bottom:24px; font-size:0.93rem; }
+
+footer { background:var(--leather); color:rgba(232,213,181,0.5); text-align:center; padding:28px; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.93rem; border-top:2px solid var(--gold); margin-top:50px; }
+footer span { color:var(--gold); }
+
+@media(max-width:680px) {
+  .author-hero { grid-template-columns:1fr; }
+  .section { padding:38px 18px; }
+  nav button { padding:11px 13px; font-size:0.66rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-ornament">Est. 2026 &middot; A Bibliophile's Sanctuary</div>
+  <h1 class="site-title">Inkara</h1>
+  <p class="tagline">Curating stories that stay with u long after the last page</p>
+  <div class="h-after">✦ ✦ ✦</div>
+</header>
+
+<nav>
+   <button onclick="showTab('about',this)">About</button>
+  <button onclick="showTab('contact',this)">Contact</button>
+  <button onclick="showTab('privacy',this)">Privacy</button>
+  <button onclick="showTab('terms',this)">Terms</button>
+  <button class="active" onclick="showTab('author',this)">The Author</button>
+  <button onclick="showTab('books',this)">The Library</button>
+  <button onclick="showTab('mood',this)">By Mood</button>
+  <button onclick="showTab('wishlist',this)">Wishlist</button>
+</nav>
+
+<!-- ABOUT TAB -->
+<div class="section" id="tab-about" style="display:none">
+  <h2 class="sec-title">About Inkara</h2>
+  <p class="sec-sub">A sanctuary for those who live through stories</p>
+
+  <div class="content-box">
+    <p>Welcome to Inkara – a platform crafted for book lovers.</p>
+
+    <p>
+      Our mission is to help readers discover books based on their mood,
+      emotions, and literary taste.
+    </p>
+
+    <p>
+      Founded by Mahek, Inkara is not just a website — it’s a space where
+      stories stay with you long after the last page.
+    </p>
+  </div>
+</div>
+
+<!-- CONTACT TAB -->
+<div class="section" id="tab-contact" style="display:none">
+  <h2 class="sec-title">Contact Us</h2>
+  <p class="sec-sub">We’d love to hear from you</p>
+
+  <div class="content-box">
+    <form>
+      <label>Send to Email(inkara.by.mahek@gmail.com)</label><br>
+      <input type="email" placeholder="inkara.by.mahek@gmail.com"><br><br>
+
+      <label>Name</label><br>
+      <input type="text" placeholder="Enter your name"><br><br>
+
+      <label>Email</label><br>
+      <input type="email" placeholder="Enter your email"><br><br>
+
+      <label>Message</label><br>
+      <textarea placeholder="Write your message..."></textarea><br><br>
+
+      <button type="submit">Send</button>
+    </form>
+  </div>
+</div>
+
+<!-- PRIVACY TAB -->
+<div class="section" id="tab-privacy" style="display:none">
+  <h2 class="sec-title">Privacy Policy</h2>
+  <p class="sec-sub">Your trust matters to us</p>
+
+  <div class="content-box">
+    <p>We respect your privacy and are committed to protecting your data.</p>
+
+    <p>
+      We may collect basic information such as your name and email to improve
+      your experience.
+    </p>
+
+    <p>
+      We do not share your personal information with third parties without your consent.
+    </p>
+  </div>
+</div>
+
+<!-- TERMS TAB -->
+<div class="section" id="tab-terms" style="display:none">
+  <h2 class="sec-title">Terms & Conditions</h2>
+  <p class="sec-sub">Guidelines for using Inkara</p>
+
+  <div class="content-box">
+    <p>By accessing this website, you agree to comply with our terms.</p>
+
+    <p>You may not misuse content or attempt to disrupt the platform.</p>
+
+    <p>We reserve the right to update these terms at any time.</p>
+  </div>
+</div>
+
+<!-- AUTHOR TAB -->
+<div class="section" id="tab-author">
+  <div class="search-row">
+    <input type="text" id="authorInput" placeholder="Search for an author… e.g. Rabindranath Tagore" onkeydown="if(event.key==='Enter')searchAuthor()"/>
+    <button class="btn" onclick="searchAuthor()" id="authorBtn">Explore</button>
+  </div>
+  <div id="authorContent">
+    <div class="empty-state">
+      <div class="empty-icon">📖</div>
+      <p>Search for an author above to begin your literary journey…</p>
+      <p style="margin-top:10px;font-size:0.85rem;opacity:0.7;">Try: Rabindranath Tagore · Arundhati Roy · Jane Austen · Gabriel García Márquez</p>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKS TAB -->
+<div class="section" id="tab-books" style="display:none">
+  <h2 class="sec-title">The Library</h2>
+  <p class="sec-sub">A curated collection of literary masterworks</p>
+  <div class="search-row">
+    <input type="text" id="bookInput" placeholder="Search books, authors, genres…" onkeydown="if(event.key==='Enter')searchBooks()"/>
+    <button class="btn" onclick="searchBooks()" id="bookBtn">Search</button>
+  </div>
+  <div class="genre-bar" id="genreBar"></div>
+  <div id="booksContent">
+    <div class="spinner-wrap"><div class="spinner"></div><p>Curating the shelves…</p></div>
+  </div>
+</div>
+
+<!-- MOOD TAB -->
+<div class="section" id="tab-mood" style="display:none">
+  <h2 class="sec-title">Read by Mood</h2>
+  <p class="sec-sub">Tell us how you feel — we shall find the perfect companion</p>
+  <div class="mood-grid" id="moodGrid"></div>
+  <div id="moodContent"></div>
+</div>
+
+<!-- WISHLIST TAB -->
+<div class="section" id="tab-wishlist" style="display:none">
+  <h2 class="sec-title">My Wishlist</h2>
+  <p class="sec-sub">Books awaiting your devoted attention</p>
+  <div id="wishlistContent"></div>
+</div>
+
+<div class="divider">✦ ✦ ✦</div>
+<footer><p>Crafted for lovers of the written word by Mahek &middot; <span>Inkara</span> &middot; Powered by Google Books API</p></footer>
+
+<div id="toast"></div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3 id="mTitle"></h3>
+    <div class="modal-meta" id="mMeta"></div>
+    <p id="mDesc"></p>
+  </div>
+</div>
+
+<script>
+// ── STATE ──
+let wishlist = JSON.parse(localStorage.getItem('lh_wishlist') || '[]');
+let allBooks = [];
+let activeGenre = 'All';
+
+// ── GENRE MAPPING ──
+const genreMap = [
+  ['fiction','Literary Fiction'],['novel','Literary Fiction'],['literature','Literary Fiction'],
+  ['romance','Romance'],['love story','Romance'],
+  ['mystery','Mystery'],['detective','Mystery'],['crime','Mystery'],
+  ['thriller','Thriller'],['suspense','Thriller'],
+  ['horror','Horror'],
+  ['fantasy','Fantasy'],['magic','Fantasy'],['fairy','Fantasy'],
+  ['science fiction','Sci-Fi'],['sci-fi','Sci-Fi'],['dystopia','Sci-Fi'],['futuristic','Sci-Fi'],
+  ['biography','Biography'],['autobiography','Biography'],['memoir','Biography'],
+  ['history','History'],['historical fiction','Historical Fiction'],['historical','Historical Fiction'],
+  ['philosophy','Philosophy'],['existentialism','Philosophy'],
+  ['psychology','Psychology'],['self-help','Self-Help'],['self help','Self-Help'],
+  ['adventure','Adventure'],['travel','Travel'],
+  ['poetry','Poetry'],['drama','Drama'],
+  ['classic','Classics'],['children','Children\'s'],['young adult','YA'],
+  ['mythology','Mythology'],['spiritual','Spirituality'],['religion','Religion'],
+  ['graphic','Graphic Novel'],['comic','Graphic Novel'],
+  ['political','Politics'],['economics','Economics'],['science','Science'],
+  ['indian','Indian Literature'],['hindi','Indian Literature'],['bengali','Indian Literature'],
+];
+
+function mapGenre(cats) {
+  if (!cats || !cats.length) return 'General Fiction';
+  const raw = cats.join(' ').toLowerCase();
+  for (const [kw, label] of genreMap) {
+    if (raw.includes(kw)) return label;
+  }
+  return cats[0].split('/')[0].trim() || 'General';
+}
+
+// ── GOOGLE BOOKS API ──
+async function fetchBooks(query, max = 20) {
+  const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=${max}&printType=books&langRestrict=en&orderBy=relevance`;
+  try {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('API error');
+    const data = await r.json();
+    if (!data.items) return [];
+    return data.items.map(item => {
+      const v = item.volumeInfo || {};
+      return {
+        id: item.id,
+        title: v.title || 'Untitled',
+        author: (v.authors || ['Unknown']).join(', '),
+        genre: mapGenre(v.categories),
+        cover: v.imageLinks?.thumbnail?.replace('http:','https:') || v.imageLinks?.smallThumbnail?.replace('http:','https:') || null,
+        description: (v.description || 'No description available.').slice(0, 600),
+        rating: v.averageRating || null,
+        year: v.publishedDate ? v.publishedDate.slice(0,4) : '—',
+        pages: v.pageCount || '—',
+        publisher: v.publisher || '—',
+        link: v.infoLink || '#',
+      };
+    });
+  } catch(e) {
+    console.error('Books fetch error:', e);
+    return [];
+  }
+}
+
+// ── TABS ──
+function showTab(name, btn) {
+  const tabs = ['about','contact','privacy','terms','author','books','mood','wishlist'];
+
+  tabs.forEach(t => {
+    const el = document.getElementById('tab-' + t);
+    if (el) {
+      el.style.display = (t === name) ? '' : 'none';
+    }
+  });
+
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  if (name === 'books' && allBooks.length === 0) initLibrary();
+  if (name === 'mood') initMoodGrid();
+  if (name === 'wishlist') renderWishlist();
+}
+
+// ── WIKIPEDIA: PHOTO + BIO ──
+async function fetchWikiData(name) {
+  try {
+    // Step 1: search for the page
+    const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(name + ' author writer')}&srlimit=1&format=json&origin=*`;
+    const searchRes = await fetch(searchUrl);
+    const searchData = await searchRes.json();
+    const pages = searchData?.query?.search;
+    if (!pages || !pages.length) return { photo: null, bio: null, wikiUrl: null };
+
+    const pageId = pages[0].pageid;
+    const title = pages[0].title;
+
+    // Step 2: fetch summary + thumbnail in one call
+    const summaryUrl = `https://en.wikipedia.org/w/api.php?action=query&pageids=${pageId}&prop=extracts|pageimages|info&exintro=true&explaintext=true&pithumbsize=500&inprop=url&format=json&origin=*`;
+    const summaryRes = await fetch(summaryUrl);
+    const summaryData = await summaryRes.json();
+    const page = summaryData?.query?.pages?.[pageId];
+    if (!page) return { photo: null, bio: null, wikiUrl: null };
+
+    const photo = page.thumbnail?.source || null;
+    const rawBio = page.extract || '';
+    // Take first 2 meaningful sentences
+    const sentences = rawBio.split(/(?<=[.!?])\s+/).filter(s => s.length > 40);
+    const bio = sentences.slice(0, 3).join(' ');
+    const wikiUrl = page.fullurl || `https://en.wikipedia.org/wiki/${encodeURIComponent(title)}`;
+
+    return { photo, bio, wikiUrl };
+  } catch(e) {
+    console.error('Wiki fetch error:', e);
+    return { photo: null, bio: null, wikiUrl: null };
+  }
+}
+
+// ── AUTHOR SEARCH ──
+async function searchAuthor() {
+  const name = document.getElementById('authorInput').value.trim();
+  if (!name) return;
+  const el = document.getElementById('authorContent');
+  const btn = document.getElementById('authorBtn');
+  btn.disabled = true; btn.textContent = 'Searching…';
+  el.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div><p>Consulting the archives for "${name}"…</p></div>`;
+
+  // Fetch books + wiki data in parallel
+  const [books, wiki] = await Promise.all([
+    fetchBooks(`inauthor:"${name}"`, 16),
+    fetchWikiData(name)
+  ]);
+
+  btn.disabled = false; btn.textContent = 'Explore';
+
+  if (!books.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📜</div><p>No records found for "<strong>${name}</strong>".<br>Try the full name or a different spelling.</p></div>`;
+    return;
+  }
+
+  const genres = [...new Set(books.map(b => b.genre))];
+  const topGenre = genres[0] || 'Literature';
+  const years = books.map(b => b.year).filter(y => y !== '—').sort();
+  const era = years.length ? `${years[0]} – ${years[years.length-1]}` : '—';
+
+  // Portrait: real Wikipedia photo or elegant placeholder
+  const portraitHTML = wiki.photo
+    ? `<img
+        src="${wiki.photo}"
+        alt="Portrait of ${name}"
+        class="author-portrait-img"
+        onerror="this.style.display='none';document.getElementById('author-ph').style.display='flex'"
+      />
+      <div class="author-portrait-ph" id="author-ph" style="display:none;">📜</div>`
+    : `<div class="author-portrait-ph" id="author-ph">📜</div>`;
+
+  // Bio: Wikipedia extract or generic
+  const bioText = wiki.bio
+    ? wiki.bio
+    : `Discover the literary world of <strong>${name}</strong> — an author whose works have left an indelible mark on readers across generations.`;
+
+  const wikiLink = wiki.wikiUrl
+    ? `<a href="${wiki.wikiUrl}" target="_blank" class="wiki-link">Read full biography on Wikipedia →</a>`
+    : '';
+
+  el.innerHTML = `
+    <div class="author-hero">
+      <div class="portrait-col">
+        ${portraitHTML}
+        ${wiki.photo ? `<div class="photo-credit">Photo via Wikipedia</div>` : ''}
+      </div>
+      <div>
+        <div class="author-name">${name}</div>
+        <div class="author-sub">"A Voice Through Time"</div>
+        <div class="author-meta-pills">
+          <span class="meta-pill">📚 ${books.length} Works</span>
+          <span class="meta-pill">🏷️ ${genres.length} Genre${genres.length>1?'s':''}</span>
+          <span class="meta-pill">📅 ${era}</span>
+          <span class="meta-pill">🌿 ${topGenre}</span>
+        </div>
+        <div class="author-bio">
+          <p>${bioText}</p>
+        </div>
+        ${wikiLink}
+        <div class="genre-tags" style="margin-top:18px;">
+          ${genres.map(g=>`<span class="genre-tag">${g}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="divider">✦ Works ✦</div>
+    <div class="results-info">Showing ${books.length} volumes by ${name}</div>
+    <div class="books-grid">${books.map(bookCard).join('')}</div>`;
+}
+
+// ── LIBRARY ──
+async function initLibrary() {
+  const el = document.getElementById('booksContent');
+  el.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div><p>Curating the shelves…</p></div>`;
+  const books = await fetchBooks('classic literature fiction bestseller', 24);
+  allBooks = books;
+  renderBooks(books, el);
+  buildGenreBar(books);
+}
+
+async function searchBooks() {
+  const q = document.getElementById('bookInput').value.trim() || 'classic literature';
+  const el = document.getElementById('booksContent');
+  const btn = document.getElementById('bookBtn');
+  btn.disabled = true; btn.textContent = 'Searching…';
+  el.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div><p>Searching the stacks…</p></div>`;
+  const books = await fetchBooks(q, 24);
+  allBooks = books; activeGenre = 'All';
+  btn.disabled = false; btn.textContent = 'Search';
+  buildGenreBar(books);
+  renderBooks(books, el);
+}
+
+function buildGenreBar(books) {
+  const genres = ['All', ...new Set(books.map(b => b.genre))];
+  const bar = document.getElementById('genreBar');
+  bar.innerHTML = genres.map(g =>
+    `<button class="gf-btn ${g==='All'?'active':''}" onclick="filterGenre('${g}',this)">${g}</button>`
+  ).join('');
+}
+
+function filterGenre(genre, btn) {
+  document.querySelectorAll('.gf-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeGenre = genre;
+  const filtered = genre === 'All' ? allBooks : allBooks.filter(b => b.genre === genre);
+  renderBooks(filtered, document.getElementById('booksContent'));
+}
+
+function renderBooks(books, container) {
+  if (!books.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><p>No books found. Try a different search.</p></div>`;
+    return;
+  }
+  container.innerHTML = `<div class="results-info">Displaying ${books.length} volumes</div><div class="books-grid">${books.map(bookCard).join('')}</div>`;
+}
+
+// ── MOOD ──
+const moods = [
+  { emoji:'⚔️', label:'Adventurous', desc:'Ready for a quest', query:'adventure action thriller quest' },
+  { emoji:'🌹', label:'Romantic', desc:'Heart wide open', query:'romance love classic beautiful' },
+  { emoji:'🌧️', label:'Melancholy', desc:'Reflective & pensive', query:'literary fiction melancholy introspective loss' },
+  { emoji:'🔭', label:'Curious', desc:'Hungry to learn', query:'science history nonfiction knowledge discover' },
+  { emoji:'🕵️', label:'On Edge', desc:'Craving suspense', query:'mystery suspense detective crime noir' },
+  { emoji:'🧚', label:'Whimsical', desc:'Seeking wonder', query:'fantasy magic fairy tale wonder enchanted' },
+  { emoji:'🏛️', label:'Philosophical', desc:'Pondering existence', query:'philosophy existentialism classics wisdom' },
+  { emoji:'☕', label:'Cozy', desc:'Warm & comfortable', query:'cozy heartwarming comfort feel-good' },
+  { emoji:'🏺', label:'Indian Epics', desc:'Ancient wisdom', query:'indian mythology epic Mahabharata Ramayana' },
+  { emoji:'🌺', label:'Spiritual', desc:'Inner peace', query:'spirituality mindfulness yoga vedanta' },
+];
+
+function initMoodGrid() {
+  const grid = document.getElementById('moodGrid');
+  if (grid.children.length) return;
+  grid.innerHTML = moods.map((m,i) =>
+    `<div class="mood-card" onclick="selectMood(${i},this)">
+      <span class="mood-emoji">${m.emoji}</span>
+      <div class="mood-label">${m.label}</div>
+      <div class="mood-desc">${m.desc}</div>
+    </div>`
+  ).join('');
+}
+
+async function selectMood(idx, card) {
+  document.querySelectorAll('.mood-card').forEach(c => c.classList.remove('sel'));
+  card.classList.add('sel');
+  const mood = moods[idx];
+  const el = document.getElementById('moodContent');
+  el.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div><p>Finding your perfect match…</p></div>`;
+  const books = await fetchBooks(mood.query, 12);
+  if (!books.length) {
+    el.innerHTML = `<div class="empty-state"><p>No matches found — try another mood.</p></div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="divider">✦ Recommended for <em>${mood.label}</em> ✦</div>
+    <div class="results-info">${books.length} titles chosen for the <em>${mood.label.toLowerCase()}</em> spirit</div>
+    <div class="books-grid">${books.map(bookCard).join('')}</div>`;
+}
+
+// ── BOOK CARD ──
+function bookCard(b) {
+  const inWish = wishlist.some(w => w.id === b.id);
+  const stars = b.rating ? '★'.repeat(Math.round(b.rating)) + '☆'.repeat(5-Math.round(b.rating)) : '';
+  const safeTitle = esc(b.title);
+  const safeMeta = esc(`${b.author} · ${b.year} · ${b.pages} pages · ${b.publisher}`);
+  const safeDesc = esc(b.description);
+  return `
+  <div class="book-card" data-id="${b.id}" data-genre="${b.genre}">
+    ${b.cover
+      ? `<img class="book-cover" src="${b.cover}" alt="${safeTitle}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
+      : ''}
+    <div class="book-cover-ph" ${b.cover?'style="display:none"':''}>📚</div>
+    <div class="book-info">
+      <div class="book-genre-badge">${b.genre}</div>
+      <div class="book-title">${b.title}</div>
+      <div class="book-author">${b.author}</div>
+      ${stars ? `<div style="color:var(--gold);font-size:0.72rem;margin-bottom:6px;">${stars}</div>` : ''}
+      <div class="book-year">${b.year}${b.pages !== '—' ? ' · '+b.pages+' pages' : ''}</div>
+      <div class="book-actions">
+        <button class="btn btn-sm btn-ghost" onclick='openModal(${JSON.stringify(safeTitle)},${JSON.stringify(safeMeta)},${JSON.stringify(safeDesc)})'>Details</button>
+        <button class="wish-btn" id="wb-${b.id}" onclick='toggleWish(${JSON.stringify(b)})' title="${inWish?'Remove':'Add to Wishlist'}">${inWish?'❤️':'🤍'}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function esc(str) {
+  return String(str).replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/'/g,"\\'");
+}
+
+// ── WISHLIST ──
+function toggleWish(book) {
+  if (typeof book === 'string') book = JSON.parse(book);
+  const idx = wishlist.findIndex(w => w.id === book.id);
+  const btn = document.getElementById('wb-'+book.id);
+  if (idx > -1) {
+    wishlist.splice(idx,1);
+    if (btn) { btn.textContent = '🤍'; }
+    showToast('Removed from wishlist');
+  } else {
+    wishlist.push(book);
+    if (btn) { btn.textContent = '❤️'; }
+    showToast('Added to wishlist ✦');
+  }
+  localStorage.setItem('lh_wishlist', JSON.stringify(wishlist));
+  // If wishlist tab open, refresh
+  if (document.getElementById('tab-wishlist').style.display !== 'none') renderWishlist();
+}
+
+function renderWishlist() {
+  const el = document.getElementById('wishlistContent');
+  if (!wishlist.length) {
+    el.innerHTML = `<div class="wl-empty"><div class="icon">📚</div><p>Your wishlist awaits its first volume…</p><p style="margin-top:10px;font-size:0.85rem;">Browse the Library or explore by Mood to add books.</p></div>`;
+    return;
+  }
+  el.innerHTML = `<div class="results-info">${wishlist.length} volume${wishlist.length>1?'s':''} in your collection</div><div class="books-grid">${wishlist.map(bookCard).join('')}</div>`;
+}
+
+// ── MODAL ──
+function openModal(title, meta, desc) {
+  document.getElementById('mTitle').textContent = title;
+  document.getElementById('mMeta').textContent = meta;
+  document.getElementById('mDesc').textContent = desc;
+  document.getElementById('modalBg').style.display = 'flex';
+}
+function closeModal() { document.getElementById('modalBg').style.display = 'none'; }
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  // Pre-load library in bg
+  setTimeout(() => {
+    if (document.getElementById('tab-books').style.display === 'none') {
+      fetchBooks('classic literature fiction bestseller', 24).then(books => {
+        allBooks = books;
+      });
+    }
+  }, 800);
+});
+</script>
+</body>
+</html>
