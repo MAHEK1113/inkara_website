@@ -19,14 +19,14 @@ Design: Custom CSS (Vintage theme)
 Functionality: DOM Manipulation, Dynamic Rendering
 
 🚀 Live Demo
-http://127.0.0.1:5500/index.html
+https://69cb533c7c9dbeedb0132794--chic-marigold-0fe596.netlify.app/
 
 📂 Project Structure
 inkara-website/
 ├── index.html
 
 ⚙️ How to Run Locally
-http://127.0.0.1:5500/index.html
+https://69cb533c7c9dbeedb0132794--chic-marigold-0fe596.netlify.app/
 
 🔮 Future Improvements
 🔐 User authentication
